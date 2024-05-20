@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\VinylMixRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,7 +15,7 @@ class VinylMix
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column()]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -23,14 +24,22 @@ class VinylMix
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $trackCount = null;
 
     #[ORM\Column(length: 255)]
     private ?string $genre = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private int $votes = 0;
+
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $createdAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable(); // Default value
+    }
 
     public function getId(): ?int
     {
@@ -109,7 +118,7 @@ class VinylMix
 
     public function getVotesString(): string
     {
-        $prefix = ($this->votes === 0) ? '' : (($this->votes >= 0) ? '+' : '-');
+        $prefix = ($this->votes === 0) ? '' : (($this->votes > 0) ? '+' : '-');
 
         return sprintf('%s %d', $prefix, abs($this->votes));
     }

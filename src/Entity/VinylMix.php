@@ -11,30 +11,30 @@ class VinylMix
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column()]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Title = null;
+    private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $Description = null;
+    private ?string $description = null;
 
     #[ORM\Column]
-    private ?int $TrzckCount = null;
+    private ?int $trackCount = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Genre = null;
+    private ?string $genre = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $CreatedAt = null;
+    private \DateTimeImmutable $createdAt;
 
     #[ORM\Column]
-    private ?int $Votes = 0;
+    private int $votes = 0;
 
     public function __construct()
     {
-        $this->CreatedAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -44,73 +44,89 @@ class VinylMix
 
     public function getTitle(): ?string
     {
-        return $this->Title;
+        return $this->title;
     }
 
-    public function setTitle(string $Title): static
+    public function setTitle(string $title): self
     {
-        $this->Title = $Title;
+        $this->title = $title;
 
         return $this;
     }
 
     public function getDescription(): ?string
     {
-        return $this->Description;
+        return $this->description;
     }
 
-    public function setDescription(?string $Description): static
+    public function setDescription(?string $description): self
     {
-        $this->Description = $Description;
+        $this->description = $description;
 
         return $this;
     }
 
-    public function getTrzckCount(): ?int
+    public function getTrackCount(): ?int
     {
-        return $this->TrzckCount;
+        return $this->trackCount;
     }
 
-    public function setTrzckCount(int $TrzckCount): static
+    public function setTrackCount(int $trackCount): self
     {
-        $this->TrzckCount = $TrzckCount;
+        $this->trackCount = $trackCount;
 
         return $this;
     }
 
     public function getGenre(): ?string
     {
-        return $this->Genre;
+        return $this->genre;
     }
 
-    public function setGenre(string $Genre): static
+    public function setGenre(string $genre): self
     {
-        $this->Genre = $Genre;
+        $this->genre = $genre;
 
         return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->CreatedAt;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $CreatedAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        $this->CreatedAt = $CreatedAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     public function getVotes(): ?int
     {
-        return $this->Votes;
+        return $this->votes;
     }
 
-    public function setVotes(int $Votes): static
+    public function setVotes(int $votes): self
     {
-        $this->Votes = $Votes;
+        $this->votes = $votes;
 
         return $this;
+    }
+
+    public function getVotesString(): string
+    {
+        $prefix = ($this->votes === 0) ? '' : (($this->votes >= 0) ? '+' : '-');
+
+        return sprintf('%s %d', $prefix, abs($this->votes));
+    }
+
+    public function getImageUrl(int $width): string
+    {
+        return sprintf(
+            'https://picsum.photos/id/%d/%d',
+            ($this->getId() + 50) % 1000, // number between 0 and 1000, based on the id
+            $width
+        );
     }
 }

@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use function Symfony\Component\String\u;
+use Doctrine\ORM\EntityManagerInterface;
 
 
 
@@ -28,13 +29,16 @@ class VinylController extends AbstractController
         ]);
     }
     #[Route('/browse/{slug}', name: 'app_browse')]
-    function browse(string $slug = null): Response
+    public function browse(VinylMixRepository $mixRepository, string $slug = null): Response
     {
+        $genre = $slug ? u(str_replace('-', ' ', $slug))->title(true) : null;
 
-        $genre = $slug ? u(str_replace("-", " ", $slug))->title(true) : null;
-
+        $mixes = $mixRepository->findAll();
+        
         return $this->render('vinyl/browse.html.twig', [
             'genre' => $genre,
+            'mixes' => $mixes,
         ]);
     }
+    
 }
